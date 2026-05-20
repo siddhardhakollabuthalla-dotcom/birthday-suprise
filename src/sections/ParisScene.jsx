@@ -1,5 +1,4 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import FireworksEngine from "../components/FireworksEngine";
 
 import {
   OrbitControls,
@@ -16,23 +15,22 @@ import { motion } from "framer-motion";
 
 import { useRef } from "react";
 
-import * as THREE from "three";
-
 function EiffelTower() {
 
   const towerRef = useRef();
 
   useFrame(({ clock }) => {
 
-    towerRef.current.rotation.y =
-      Math.sin(clock.elapsedTime * 0.2) * 0.08;
+    if (towerRef.current) {
+      towerRef.current.rotation.y =
+        Math.sin(clock.elapsedTime * 0.2) * 0.08;
+    }
 
   });
 
   return (
     <group ref={towerRef}>
 
-      {/* Bottom */}
       <mesh position={[0, -2, 0]}>
         <cylinderGeometry args={[1.8, 2.8, 1.5, 4]} />
 
@@ -43,7 +41,6 @@ function EiffelTower() {
         />
       </mesh>
 
-      {/* Middle */}
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[1.1, 1.8, 3, 4]} />
 
@@ -54,7 +51,6 @@ function EiffelTower() {
         />
       </mesh>
 
-      {/* Top */}
       <mesh position={[0, 2.7, 0]}>
         <cylinderGeometry args={[0.2, 1, 2.5, 4]} />
 
@@ -65,44 +61,21 @@ function EiffelTower() {
         />
       </mesh>
 
-      {/* Light Beacon */}
-      <mesh position={[0, 4.3, 0]}>
-        <sphereGeometry args={[0.25, 32, 32]} />
-
-        <meshBasicMaterial color="#fff5cc" />
-      </mesh>
-
     </group>
   );
 }
 
-function Moon() {
-  return (
-    <mesh position={[6, 5, -5]}>
-
-      <sphereGeometry args={[1, 64, 64]} />
-
-      <meshStandardMaterial
-        color="#f5f3ce"
-        emissive="#fff8cc"
-        emissiveIntensity={0.3}
-      />
-
-    </mesh>
-  );
-}
-
-function FloatingLantern({
-  position,
-}) {
+function FloatingLantern({ position }) {
 
   const ref = useRef();
 
   useFrame(({ clock }) => {
 
-    ref.current.position.y =
-      position[1] +
-      Math.sin(clock.elapsedTime) * 0.3;
+    if (ref.current) {
+      ref.current.position.y =
+        position[1] +
+        Math.sin(clock.elapsedTime) * 0.2;
+    }
 
   });
 
@@ -121,108 +94,94 @@ function FloatingLantern({
   );
 }
 
-function SceneContent() {
-  <SceneContent isMobile={isMobile} />
+function SceneContent({ isMobile }) {
+
   return (
     <>
 
-      {/* Fog */}
       <fog attach="fog" args={["#050816", 8, 25]} />
 
-      {/* Camera Lights */}
-      <ambientLight intensity={0.35} />
+      <ambientLight intensity={0.5} />
 
       <directionalLight
         position={[4, 10, 4]}
-        intensity={1.8}
-        color="#fff0cc"
+        intensity={1.5}
       />
 
       <pointLight
         position={[0, 5, 0]}
-        intensity={4}
+        intensity={3}
         color="#ffd700"
       />
 
-      {/* Stars */}
       <Stars
-       radius={120}
+        radius={120}
         depth={50}
         count={isMobile ? 2000 : 7000}
         factor={5}
         fade
       />
 
-      {/* Moon */}
-      <Moon />
-
-      {/* Tower */}
       <EiffelTower />
 
-      {/* Floating Lanterns */}
       <FloatingLantern position={[-3, 1, 2]} />
       <FloatingLantern position={[3, 2, 1]} />
       <FloatingLantern position={[-2, 3, -2]} />
-      <FloatingLantern position={[2, 1, -1]} />
 
-      {/* Ground */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -3, 0]}
       >
         <planeGeometry args={[50, 50]} />
 
-        <meshStandardMaterial
-          color="#0a0f1f"
-          metalness={0.3}
-          roughness={0.7}
-        />
+        <meshStandardMaterial color="#0a0f1f" />
       </mesh>
 
-      {/* Bloom */}
       <EffectComposer>
         <Bloom
           luminanceThreshold={0}
-          intensity={1.5}
-          mipmapBlur
+          intensity={1.2}
         />
       </EffectComposer>
 
       <OrbitControls
-  enableZoom={false}
-  enablePan={false}
-  enableRotate={false}
-  autoRotate
-  autoRotateSpeed={0.3}
-/>
+        enableZoom={false}
+        enableRotate={false}
+        enablePan={false}
+        autoRotate
+        autoRotateSpeed={0.3}
+      />
 
     </>
   );
 }
 
 export default function ParisScene() {
+
   const isMobile =
     window.innerWidth < 768;
+
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden">
 
-      {/* 3D Canvas */}
       <Canvas
-  camera={{ position: [0, 1, 10], fov: 50 }}
-  style={{
-    touchAction: "pan-y",
-  }}
->
+        camera={{
+          position: [0, 1, 10],
+          fov: 50,
+        }}
+        style={{
+          touchAction: "pan-y",
+        }}
+      >
 
-        <SceneContent />
+        <SceneContent
+          isMobile={isMobile}
+        />
 
       </Canvas>
-      <FireworksEngine />
 
-      {/* Overlay Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-[#050816]/30 pointer-events-none" />
 
-      {/* Center Reveal Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
 
         <motion.div
@@ -236,46 +195,32 @@ export default function ParisScene() {
           }}
           transition={{
             duration: 2,
-            delay: 1,
           }}
           className="text-center px-6"
         >
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="uppercase tracking-[0.5em] text-pink-300 text-sm md:text-base mb-6"
-          >
+          <p className="uppercase tracking-[0.5em] text-pink-300 text-sm md:text-base mb-6">
             Paris Night Experience
-          </motion.p>
+          </p>
 
-          <motion.h1
-            animate={{
-              textShadow: [
-                "0 0 20px rgba(255,255,255,0.4)",
-                "0 0 60px rgba(255,215,0,0.9)",
-                "0 0 20px rgba(255,255,255,0.4)",
-              ],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-            }}
+          <h1
             className="
               text-4xl
               md:text-8xl
               font-black
               leading-tight
+              bg-gradient-to-r
+              from-pink-300
+              via-white
+              to-yellow-200
+              bg-clip-text
+              text-transparent
             "
           >
             HAPPY BIRTHDAY
             <br />
-
-            <span className="bg-gradient-to-r from-pink-300 via-white to-yellow-200 bg-clip-text text-transparent">
-              MY DEAR LITTLE SISTER ❤️
-            </span>
-          </motion.h1>
+            MY DEAR LITTLE SISTER ❤️
+          </h1>
 
         </motion.div>
 
