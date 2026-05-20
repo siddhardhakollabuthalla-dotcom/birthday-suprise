@@ -29,7 +29,7 @@ export default function App() {
   }, []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#050816] text-white">
+    <main className="relative min-h-screen bg-[#050816] text-white overflow-x-hidden">
 
       <AudioController
         birthdayStarted={birthdayStarted}

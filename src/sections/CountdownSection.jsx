@@ -99,7 +99,7 @@ export default function CountdownSection({
 
   // CHANGE THIS DATE
   const birthdayDate = new Date(
-  Date.now() + 10000
+    "2026-07-19T00:00:00"
 );
 
   return (
