@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+
+
+ import { useEffect } from "react";
 
 import Lenis from "lenis";
 
@@ -7,9 +9,9 @@ export default function useLenis() {
   useEffect(() => {
 
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.2,
       smoothWheel: true,
-      smoothTouch: true,
+      smoothTouch: false,
     });
 
     function raf(time) {

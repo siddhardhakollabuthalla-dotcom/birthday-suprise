@@ -8,6 +8,8 @@ body,
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
+  touch-action: pan-y;
   background: #050816;
   color: white;
   font-family: "Inter", sans-serif;

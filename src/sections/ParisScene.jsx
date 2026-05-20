@@ -122,6 +122,7 @@ function FloatingLantern({
 }
 
 function SceneContent() {
+  <SceneContent isMobile={isMobile} />
   return (
     <>
 
@@ -145,9 +146,9 @@ function SceneContent() {
 
       {/* Stars */}
       <Stars
-        radius={120}
+       radius={120}
         depth={50}
-        count={7000}
+        count={isMobile ? 2000 : 7000}
         factor={5}
         fade
       />
@@ -188,21 +189,30 @@ function SceneContent() {
       </EffectComposer>
 
       <OrbitControls
-        enableZoom={false}
-        autoRotate
-        autoRotateSpeed={0.3}
-      />
+  enableZoom={false}
+  enablePan={false}
+  enableRotate={false}
+  autoRotate
+  autoRotateSpeed={0.3}
+/>
 
     </>
   );
 }
 
 export default function ParisScene() {
+  const isMobile =
+    window.innerWidth < 768;
   return (
     <section className="relative h-screen overflow-hidden">
 
       {/* 3D Canvas */}
-      <Canvas camera={{ position: [0, 1, 10], fov: 50 }}>
+      <Canvas
+  camera={{ position: [0, 1, 10], fov: 50 }}
+  style={{
+    touchAction: "pan-y",
+  }}
+>
 
         <SceneContent />
 
